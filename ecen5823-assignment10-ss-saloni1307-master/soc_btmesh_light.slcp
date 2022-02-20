@@ -1,0 +1,95 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: soc_btmesh_light
+label: soc_btmesh_light
+description: |
+  This example is an out-of-the-box Software Demo where the LEDs of the  WSTK can be controlled by push button presses on another device  (soc_btmesh_switch). Beside switching on and off the LEDs, their  lighting intensity, color temperature and delta UV (only displayed  on the LCD) can also be set. The example also tries to establish  friendship as Friend node and prints its status to the LCD. The example  is based on the Bluetooth Mesh Generic On/Off Model, the Light Lightness  Model, CTL Model and LC Model. This example requires one of the Internal Storage Bootloader (single image) variants depending on device memory.
+category: Bluetooth Mesh Examples
+package: Btmesh
+quality: production
+source:
+- {path: app.c}
+- {path: app_led.c}
+- {path: app_out_lcd.c}
+- {path: app_properties.c}
+- {path: local_cli_commands.c}
+- {path: main.c}
+tag: ['hardware:component:button:2+', 'hardware:component:led:2+', prebuilt_demo,
+  'hardware:rf:band:2400', 'hardware:board_only', 'hardware:component:display:ls013b7dh03',
+  'hardware:device:sdid:!205']
+include:
+- path: ''
+  file_list:
+  - {path: app.h}
+  - {path: app_led.h}
+sdk: {id: gecko_sdk, version: 3.2.1}
+toolchain_settings: []
+component:
+- {id: btmesh_factory_reset}
+- instance: [btn0, btn1]
+  id: simple_button
+- {id: btmesh_event_log}
+- instance: [example]
+  id: cli
+- {id: btmesh_ctl_server}
+- {id: simple_timer}
+- {id: btmesh_scene_server}
+- {id: mpu}
+- {id: btmesh_lighting_server}
+- instance: [led0, led1]
+  id: pwm
+- {id: btmesh_feature_gatt_prov_bearer}
+- {id: rail_util_pti}
+- {id: btmesh_scheduler_server}
+- {id: btmesh_feature_relay}
+- {id: btmesh_proxy}
+- {id: btmesh_time_server}
+- {id: btmesh_wstk_lcd}
+- {id: app_log}
+- {id: EFR32BG13P632F512GM48}
+- {id: brd4001a}
+- instance: [vcom]
+  id: iostream_usart
+- {id: btmesh_provisioning_decorator}
+- {id: btmesh_friend}
+- {id: btmesh_lc_server}
+- {id: btmesh_stack}
+- {id: bluetooth_feature_system}
+- {id: ota_dfu}
+- {id: bootloader_interface}
+- {id: app_assert}
+- {id: btmesh_generic_base}
+- {id: brd4104a}
+other_file:
+- {path: create_bl_files.bat}
+- {path: create_bl_files.sh}
+config_file: []
+template_contribution:
+- condition: [cli]
+  name: cli_command
+  priority: 0
+  value: {name: info, handler: info, help: Prints info about BT address and mesh UUID}
+configuration:
+- {name: APP_LOG_LEVEL, value: APP_LOG_LEVEL_INFO}
+- {name: LC_SERVER_PROPERTY_STATE_DEFAULT_ENABLE, value: '1'}
+- {name: LC_SERVER_TIME_RUN_ON_DEFAULT, value: '2000'}
+- {name: LC_SERVER_TIME_PROLONG_DEFAULT, value: '500'}
+- {name: LC_SERVER_LIGHTNESS_ON_DEFAULT, value: '65535'}
+- {name: LC_SERVER_LIGHTNESS_PROLONG_DEFAULT, value: '32767'}
+- {name: LC_SERVER_LIGHTNESS_STANDBY_DEFAULT, value: '2000'}
+- {name: LC_SERVER_AMBIENT_LUX_LEVEL_ON_DEFAULT, value: '1000'}
+- {name: LC_SERVER_AMBIENT_LUX_LEVEL_PROLONG_DEFAULT, value: '500'}
+- {name: LC_SERVER_AMBIENT_LUX_LEVEL_STANDBY_DEFAULT, value: '20'}
+- {name: SL_BOARD_ENABLE_DISPLAY, value: '1'}
+- condition: [iostream_usart]
+  name: SL_BOARD_ENABLE_VCOM
+  value: '1'
+- {name: SL_HEAP_SIZE, value: '0x5000'}
+- condition: [psa_crypto]
+  name: SL_PSA_KEY_USER_SLOT_COUNT
+  value: '0'
+- {name: SL_STACK_SIZE, value: '0x1000'}
+ui_hints:
+  highlight:
+  - {path: config/btmeshconf/dcd_config.btmeshconf, focus: true}
+  - {path: config/btconf/gatt_configuration.btconf}
+
